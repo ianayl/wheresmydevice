@@ -7,6 +7,7 @@
 # - curl
 
 LOCAL_DOTNET_LOCATION="$(pwd)/dotnet"
+export DOTNET_ROOT="$(pwd)/dotnet"
 SDK_LINK="https://download.visualstudio.microsoft.com/download/pr/351400ef-f2e6-4ee7-9d1b-4c246231a065/9f7826270fb36ada1bdb9e14bc8b5123/dotnet-sdk-7.0.302-linux-x64.tar.gz"
 
 setup_dotnet() {
