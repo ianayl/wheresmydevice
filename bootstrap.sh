@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Bootstrap script for setting up and entering a local dotnet environment
 # without having to actually install dotnet on your linux machine
 #
@@ -22,12 +20,17 @@ setup_dotnet() {
 }
 
 if [ ! -d "$LOCAL_DOTNET_LOCATION" ]; then
-    read -p "Dotnet environment not set up, set up environment? [y/n] " yn_res
+    case "$SHELL" in
+        *zsh) read yn_res"?Dotnet environment not set up, set up environment? [y/n] " ;;
+        *) read -p "Dotnet environment not set up, set up environment? [y/n] " yn_res ;;
+    esac
     case "$yn_res" in
         [Yy]*) setup_dotnet ;;
         [Nn]*) echo "Aborted!"; return 1 ;;
     esac
 fi
 
-export PATH="$PATH:$LOCAL_DOTNET_LOCATION:$LOCAL_DOTNET_LOCATION/tools"
+# The tools at the end is a bit of a disgusting hack for ef framework... at this point this
+# script needs to be completely revamped.
+export PATH="$PATH:$LOCAL_DOTNET_LOCATION:$LOCAL_DOTNET_LOCATION/tools:$HOME/.dotnet/tools"
 echo "Bootstrap complete."

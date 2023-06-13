@@ -1,33 +1,33 @@
 namespace Server;
 
+public enum DeviceType
+{
+    Unknown,
+    Phone,
+    Laptop,
+    Desktop,
+}
+
 public class Device
 {
-    public string id { get; }
-    public string name { get; set; }
-    private List<Status> log { get; set; }
-    public bool hasCellular { get; set; }
-    public bool hasGPS { get; set; }
+    public int id { get; set; } = -1;
+    public string name { get; set; } = string.Empty;
+    public DeviceType type { get; set; } = DeviceType.Unknown;
+    public bool hasCellular { get; set; } = false;
+    public bool hasGPS { get; set; } = false;
+    public DateTime lastSeen { get; set; }
 
-    public Device(string id, string name, bool hasCellular, bool hasGPS)
+    /**
+     * Copy information from one Device instance to another Device instance.
+     * Does not copy device id's, for those are unique!
+     */
+    public void Copy(Device src)
     {
-        this.id = id;
-        this.name = name;
-        this.hasCellular = hasCellular;
-        this.hasGPS = hasGPS;
-        log = new List<Status>();
+        this.name = src.name;
+        this.type = src.type;
+        this.hasCellular = src.hasCellular;
+        this.hasGPS = src.hasGPS;
+        // TODO should I copy lastSeen?
+        this.lastSeen = src.lastSeen;
     }
-
-    public Status pushStatus(Status s)
-    {
-        log.Add(s);
-        return s;
-    }
-
-    public static explicit operator SingleDeviceResponse(Device d)
-    {
-        return new SingleDeviceResponse(d.name, d.id,
-                                        (d.log.Count > 0) ? d.log.Last() : null,
-                                        d.hasCellular, d.hasGPS);
-    }
-
 }
