@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Server.Data;
 
 namespace Server.Controllers;
 
@@ -6,25 +9,23 @@ namespace Server.Controllers;
 [Route("devices")]
 public class DeviceController : ControllerBase
 {
-    private static List<Device> tmpDevices = new List<Device>
+    private readonly DataContext context;
+
+    public DeviceController(DataContext ctx)
     {
-        new Device {
-            id = 1,
-            name = "iphone",
-            lastSeen = new DateTime(),
-        }
-    };
+        this.context = ctx;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<Device>>> GetDevices()
     {
-        return Ok(tmpDevices);
+        return Ok(await context.Devices.ToListAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Device>> GetDevice(int id)
     {
-        var res = tmpDevices.Find(d => d.id == id);
+        Device? res = await context.Devices.FindAsync(id);
         if (res != null) return Ok(res);
         return NotFound($"No device with id {id}!"); 
     }
@@ -36,27 +37,30 @@ public class DeviceController : ControllerBase
             return BadRequest($"Cannot have negative device id's!");
         else if (d.name == string.Empty)
             return BadRequest("Device name is empty!");
-        else if (tmpDevices.Find(e => e.id == d.id) != null)
+        else if ((await context.Devices.FindAsync(d.id)) != null)
             return BadRequest($"Device with id {d.id} already exists!");
-        tmpDevices.Add(d);
-        return Ok(tmpDevices);
+        context.Devices.Add(d);
+        await context.SaveChangesAsync();
+        return Ok(await context.Devices.ToListAsync());
     }
 
     [HttpPut]
     public async Task<ActionResult<List<Device>>> UpdateDevice(Device req)
     {
-        var target = tmpDevices.Find(d => d.id == req.id);
+        var target = await context.Devices.FindAsync(req.id);
         if (target == null) return NotFound($"No device with id {req.id}!"); 
         target.Copy(req);
-        return Ok(tmpDevices);
+        await context.SaveChangesAsync();
+        return Ok(await context.Devices.ToListAsync());
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<List<Device>>> DeleteDevice(int id)
     {
-        var res = tmpDevices.Find(d => d.id == id);
+        var res = await context.Devices.FindAsync(id);
         if (res == null) return NotFound($"No device with id {id}!"); 
-        tmpDevices.Remove(res);
-        return Ok(tmpDevices);
+        context.Devices.Remove(res);
+        await context.SaveChangesAsync();
+        return Ok(await context.Devices.ToListAsync());
     }
 }

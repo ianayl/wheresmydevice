@@ -1,4 +1,6 @@
-namespace Server;
+using System.ComponentModel.DataAnnotations;
+
+namespace Server.Data;
 
 public enum DeviceType
 {
@@ -10,12 +12,23 @@ public enum DeviceType
 
 public class Device
 {
+    // TODO change this to a string
+    [Key]
     public int id { get; set; } = -1;
+
+    [Required]
     public string name { get; set; } = string.Empty;
+
+    [Required]
     public DeviceType type { get; set; } = DeviceType.Unknown;
+
     public bool hasCellular { get; set; } = false;
+
     public bool hasGPS { get; set; } = false;
-    public DateTime lastSeen { get; set; }
+
+    // TODO keep track of hotspot?
+
+    public DateTime? lastSeen { get; set; }
 
     /**
      * Copy information from one Device instance to another Device instance.
