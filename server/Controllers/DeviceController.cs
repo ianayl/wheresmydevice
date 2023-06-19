@@ -23,7 +23,7 @@ public class DeviceController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Device>> GetDevice(int id)
+    public async Task<ActionResult<Device>> GetDevice(string id)
     {
         Device? res = await context.Devices.FindAsync(id);
         if (res != null) return Ok(res);
@@ -33,9 +33,7 @@ public class DeviceController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<Device>>> CreateDevice(Device d)
     {
-        if (d.id < 0)
-            return BadRequest($"Cannot have negative device id's!");
-        else if (d.name == string.Empty)
+        if (d.name == string.Empty)
             return BadRequest("Device name is empty!");
         else if ((await context.Devices.FindAsync(d.id)) != null)
             return BadRequest($"Device with id {d.id} already exists!");
@@ -55,7 +53,7 @@ public class DeviceController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<List<Device>>> DeleteDevice(int id)
+    public async Task<ActionResult<List<Device>>> DeleteDevice(string id)
     {
         var res = await context.Devices.FindAsync(id);
         if (res == null) return NotFound($"No device with id {id}!"); 

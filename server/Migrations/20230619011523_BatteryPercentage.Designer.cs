@@ -12,8 +12,8 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230616011545_ChangePK")]
-    partial class ChangePK
+    [Migration("20230619011523_BatteryPercentage")]
+    partial class BatteryPercentage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Data.Device", b =>
                 {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    b.Property<string>("id")
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
 
                     b.Property<bool>("hasCellular")
                         .HasColumnType("boolean");
@@ -39,7 +37,10 @@ namespace Server.Migrations
                     b.Property<bool>("hasGPS")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("lastSeen")
+                    b.Property<int?>("lastBattery")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("lastSeen")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("name")

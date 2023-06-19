@@ -24,17 +24,18 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Data.Device", b =>
                 {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    b.Property<string>("id")
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
 
                     b.Property<bool>("hasCellular")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("hasGPS")
                         .HasColumnType("boolean");
+
+                    b.Property<int?>("lastBattery")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("lastSeen")
                         .HasColumnType("timestamp with time zone");

@@ -5,6 +5,7 @@ namespace Server.Data;
 public enum DeviceType
 {
     Unknown,
+    Server,
     Phone,
     Laptop,
     Desktop,
@@ -14,7 +15,9 @@ public class Device
 {
     // TODO change this to a string
     [Key]
-    public int id { get; set; } = -1;
+    [StringLength(7)]
+    [Required]
+    public string id { get; set; } = string.Empty;
 
     [Required]
     public string name { get; set; } = string.Empty;
@@ -29,6 +32,8 @@ public class Device
     // TODO keep track of hotspot?
 
     public DateTime? lastSeen { get; set; }
+
+    public int? lastBattery { get; set; }
 
     /**
      * Copy information from one Device instance to another Device instance.
